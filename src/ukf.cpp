@@ -52,6 +52,27 @@ UKF::UKF() {
 
   Hint: one or more values initialized above might be wildly off...
   */
+  //set state dimension
+  int n_x = 5;
+
+  //set augmented dimension
+  int n_aug = 7;
+
+  is_initialized_ = false;
+
+  // todo check all initializations
+  P_.fill(0);
+  x_.fill(0);
+
+  // todo initialize values of sigma points matrix?
+  Xsig_pred_ = MatrixXd(n_aug, 2 * n_aug + 1);
+
+  lambda_ = 3 - n_x;
+
+  weights_ = VectorXd(2 * n_aug + 1);
+
+  NIS_laser_ = 0.0;
+  NIS_radar_ = 0.0;
 }
 
 UKF::~UKF() {}
