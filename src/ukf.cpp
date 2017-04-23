@@ -60,11 +60,6 @@ UKF::UKF() {
 
   is_initialized_ = false;
 
-  // todo check all initializations
-  P_.fill(0);
-  x_.fill(0);
-
-  // todo initialize values of sigma points matrix?
   Xsig_pred_ = MatrixXd(n_x_, 2 * n_aug_ + 1);
 
   lambda_ = 3 - n_x_;
@@ -82,12 +77,6 @@ UKF::~UKF() {}
  * either radar or laser.
  */
 void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
-  /**
-  TODO:
-
-  Complete this function! Make sure you switch between lidar and radar
-  measurements.
-  */
   if (!is_initialized_) {
     if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
       /**
@@ -95,7 +84,6 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
       */
       double rho = meas_package.raw_measurements_.coeff(0);
       double phi = meas_package.raw_measurements_.coeff(1);
-      double rho_dot = meas_package.raw_measurements_.coeff(2);
 
       x_ << rho * cos(phi), rho * sin(phi), 0, 0, 0;
 
@@ -105,6 +93,8 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
       */
       x_ << meas_package.raw_measurements_.coeff(0), meas_package.raw_measurements_.coeff(1), 0, 0, 0;
     }
+
+    P_ = MatrixXd::Identity(5, 5);
 
     // done initializing, no need to predict or update
     time_us_ = meas_package.timestamp_;
