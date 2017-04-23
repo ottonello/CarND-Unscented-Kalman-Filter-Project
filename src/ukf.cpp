@@ -48,8 +48,6 @@ UKF::UKF() {
   /**
   TODO:
 
-  Complete the initialization. See ukf.h for other member properties.
-
   Hint: one or more values initialized above might be wildly off...
   */
   //set state dimension
@@ -94,6 +92,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
       x_ << meas_package.raw_measurements_.coeff(0), meas_package.raw_measurements_.coeff(1), 0, 0, 0;
     }
 
+    // TODO Instead of setting each of the diagonal values to 1, you can try setting the diagonal values by how much difference you expect between the true state and the initialized x state vector.
     P_ = MatrixXd::Identity(5, 5);
 
     // done initializing, no need to predict or update
@@ -145,6 +144,12 @@ void UKF::Prediction(double delta_t) {
   MatrixXd Xsig_aug = MatrixXd(n_aug_, 2 * n_aug_ + 1);
 
   CreateAugmentedSigmaPoints(x_aug, P_aug, Xsig_aug);
+  PredictSigmaPoints(delta_t, Xsig_aug);
+
+  PredictStateAndCovariance();
+}
+
+void UKF::PredictSigmaPoints(double delta_t, const MatrixXd &Xsig_aug) const {
   for (int i = 0; i < 2 * n_aug_ + 1; i++) {
     //extract values for better readability
     double p_x = Xsig_aug(0, i);
@@ -186,8 +191,6 @@ void UKF::Prediction(double delta_t) {
     Xsig_pred_(3, i) = yaw_p;
     Xsig_pred_(4, i) = yawd_p;
   }
-
-  PredictStateAndCovariance();
 }
 
 
@@ -246,10 +249,6 @@ void UKF::CreateAugmentedSigmaPoints(VectorXd &x_aug, MatrixXd &P_aug,
 void UKF::UpdateLidar(MeasurementPackage meas_package) {
   /**
   TODO:
-
-  Complete this function! Use radar data to update the belief about the object's
-  position. Modify the state vector, x_, and covariance, P_.
-
   You'll also need to calculate the radar NIS.
   */
   int n_z = 2;
@@ -339,10 +338,6 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 void UKF::UpdateRadar(MeasurementPackage meas_package) {
   /**
   TODO:
-
-  Complete this function! Use radar data to update the belief about the object's
-  position. Modify the state vector, x_, and covariance, P_.
-
   You'll also need to calculate the radar NIS.
   */
   int n_z = 3;
