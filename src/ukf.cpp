@@ -129,13 +129,6 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
  * measurement and this one.
  */
 void UKF::Prediction(double delta_t) {
-  /**
-  TODO:
-
-  Complete this function! Estimate the object's location. Modify the state
-  vector, x_. Predict sigma points, the state, and the state covariance matrix.
-  */
-
   //create augmented state covariance
   VectorXd x_aug = VectorXd(n_aug_);
   //create augmented state covariance
@@ -144,21 +137,16 @@ void UKF::Prediction(double delta_t) {
   MatrixXd Xsig_aug = MatrixXd(n_aug_, 2 * n_aug_ + 1);
 
   CreateAugmentedSigmaPoints(x_aug, P_aug, Xsig_aug);
-  PredictSigmaPoints(delta_t, Xsig_aug);
-
-  PredictStateAndCovariance();
-}
-
-void UKF::PredictSigmaPoints(double delta_t, const MatrixXd &Xsig_aug) const {
+  const MatrixXd &Xsig_aug1 = Xsig_aug;
   for (int i = 0; i < 2 * n_aug_ + 1; i++) {
     //extract values for better readability
-    double p_x = Xsig_aug(0, i);
-    double p_y = Xsig_aug(1, i);
-    double v = Xsig_aug(2, i);
-    double yaw = Xsig_aug(3, i);
-    double yawd = Xsig_aug(4, i);
-    double nu_a = Xsig_aug(5, i);
-    double nu_yawdd = Xsig_aug(6, i);
+    double p_x = Xsig_aug1(0, i);
+    double p_y = Xsig_aug1(1, i);
+    double v = Xsig_aug1(2, i);
+    double yaw = Xsig_aug1(3, i);
+    double yawd = Xsig_aug1(4, i);
+    double nu_a = Xsig_aug1(5, i);
+    double nu_yawdd = Xsig_aug1(6, i);
 
     //predicted state values
     double px_p, py_p;
@@ -191,6 +179,8 @@ void UKF::PredictSigmaPoints(double delta_t, const MatrixXd &Xsig_aug) const {
     Xsig_pred_(3, i) = yaw_p;
     Xsig_pred_(4, i) = yawd_p;
   }
+
+  PredictStateAndCovariance();
 }
 
 
@@ -296,6 +286,9 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   VectorXd z = meas_package.raw_measurements_;
   VectorXd y = z - z_pred;
 
+  // calculate laser NIS
+  NIS_laser_ = (y).transpose() * S.inverse() * (y);
+
   //calculate cross correlation matrix
   MatrixXd Tc = MatrixXd(this->n_x_, n_z);
   Tc.fill(0.0);
@@ -329,6 +322,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   //update state mean and covariance matrix
   this->x_ = this->x_ + K * z_diff;
   this->P_ = this->P_ - K * S * K.transpose();
+
 }
 
 /**
@@ -391,6 +385,9 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 
   VectorXd z = meas_package.raw_measurements_;
   VectorXd y = z - z_pred;
+
+  // calculate radar NIS
+  NIS_radar_ = (y).transpose() * S.inverse() * (y);
 
   //calculate cross correlation matrix
   MatrixXd Tc = MatrixXd(this->n_x_, n_z);

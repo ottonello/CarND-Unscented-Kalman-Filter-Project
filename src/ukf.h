@@ -109,8 +109,6 @@ public:
    */
   void UpdateRadar(MeasurementPackage meas_package);
 
-    void PredictSigmaPoints(double delta_t, const MatrixXd &Xsig_aug) const;
-
     void CreateAugmentedSigmaPoints(VectorXd &x_aug, MatrixXd &P_aug, MatrixXd &Xsig_aug) const;
 
     void PredictStateAndCovariance();
