@@ -92,8 +92,12 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
       x_ << meas_package.raw_measurements_.coeff(0), meas_package.raw_measurements_.coeff(1), 0, 0, 0;
     }
 
-    // TODO Instead of setting each of the diagonal values to 1, you can try setting the diagonal values by how much difference you expect between the true state and the initialized x state vector.
-    P_ = MatrixXd::Identity(5, 5);
+    P_ <<
+        .6, 0, 0, 0, 0,
+        0, .6, 0, 0, 0,
+        0, 0, 6, 0, 0,
+        0, 0, 0, 6, 0,
+        0, 0, 0, 0, 0;
 
     // done initializing, no need to predict or update
     time_us_ = meas_package.timestamp_;
