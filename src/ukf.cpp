@@ -136,6 +136,11 @@ void UKF::Prediction(double delta_t) {
   MatrixXd Xsig_aug = MatrixXd(n_aug_, 2 * n_aug_ + 1);
 
   CreateAugmentedSigmaPoints(x_aug, P_aug, Xsig_aug);
+  PredictSigmaPoints(Xsig_aug, delta_t);
+  PredictStateAndCovariance();
+}
+
+void UKF::PredictSigmaPoints(MatrixXd &Xsig_aug, double delta_t) {
   const MatrixXd &Xsig_aug1 = Xsig_aug;
   for (int i = 0; i < 2 * n_aug_ + 1; i++) {
     //extract values for better readability
@@ -178,8 +183,6 @@ void UKF::Prediction(double delta_t) {
     Xsig_pred_(3, i) = yaw_p;
     Xsig_pred_(4, i) = yawd_p;
   }
-
-  PredictStateAndCovariance();
 }
 
 

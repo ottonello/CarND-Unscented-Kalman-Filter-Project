@@ -111,6 +111,8 @@ public:
 
     void CreateAugmentedSigmaPoints(VectorXd &x_aug, MatrixXd &P_aug, MatrixXd &Xsig_aug) const;
 
+    void PredictSigmaPoints(MatrixXd &Xsig_aug, double delta_t);
+
     void PredictStateAndCovariance();
 
 };
