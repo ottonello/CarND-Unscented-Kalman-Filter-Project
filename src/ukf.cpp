@@ -92,12 +92,11 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
       x_ << meas_package.raw_measurements_.coeff(0), meas_package.raw_measurements_.coeff(1), 0, 0, 0;
     }
 
-    // TODO review v and yaw especially
     P_ <<
         .6, 0, 0, 0, 0, // px
         0, .6, 0, 0, 0, // py
         0, 0, 6, 0, 0,  // v
-        0, 0, 0, 6, 0,  // yaw
+        0, 0, 0, 7.5, 0,  // yaw
         0, 0, 0, 0, 0;  // yaw_d
 
     // done initializing, no need to predict or update
