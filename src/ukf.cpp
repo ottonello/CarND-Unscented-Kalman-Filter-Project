@@ -45,11 +45,6 @@ UKF::UKF() {
   // Radar measurement noise standard deviation radius change in m/s
   std_radrd_ = 0.3;
 
-  /**
-  TODO:
-
-  Hint: one or more values initialized above might be wildly off...
-  */
   //set state dimension
   n_x_ = 5;
 
@@ -241,10 +236,6 @@ void UKF::CreateAugmentedSigmaPoints(VectorXd &x_aug, MatrixXd &P_aug,
  * @param {MeasurementPackage} meas_package
  */
 void UKF::UpdateLidar(MeasurementPackage meas_package) {
-  /**
-  TODO:
-  You'll also need to calculate the radar NIS.
-  */
   int n_z = 2;
   MatrixXd Zsig = MatrixXd(n_z, 2 * n_aug_ + 1);
 
@@ -334,10 +325,6 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
  * @param {MeasurementPackage} meas_package
  */
 void UKF::UpdateRadar(MeasurementPackage meas_package) {
-  /**
-  TODO:
-  You'll also need to calculate the radar NIS.
-  */
   int n_z = 3;
   MatrixXd Zsig = MatrixXd(n_z, 2 * n_aug_ + 1);
 
